@@ -148,3 +148,25 @@ export async function fetchPokemon(name: string): Pokemon {
 
   return pokemon;
 }
+
+export interface PokemonResource {
+  name: string;
+  url: string;
+}
+
+export interface PokemonResourceList {
+  count: number;
+  next: string;
+  previous: string;
+  results: PokemonResource[];
+}
+
+export async function fetchPokemonResourceList(offset: number = 0, limit: number = 20): PokemonResourceList {
+  const URL = `https://pokeapi.co/api/v2/pokemon/?offset=${offset}&limit=${limit}`;
+
+  const response = await fetch(URL);
+
+  const resourceList = await response.json();
+
+  return resourceList;
+}
