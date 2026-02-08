@@ -1,27 +1,46 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import { Button, Image, Text, View } from "react-native";
+import { ActivityIndicator, Image, Text, TouchableOpacity, View } from "react-native";
 
-import { Type, Sprites } from "@/types/Pokemon";
+import { fetchPokemon, type Pokemon, type Sprites, type Type, } from "@/types/Pokemon";
 
-interface Properties {
-  id: number;
-  name: string;
-  sprites: Sprites;
-  types: Type[];
-}
+import Octicons from "@expo/vector-icons/Octicons";
 
-export function PokemonCard(properties: Properties) {
+export function PokemonCard({ name }: { name: string }) {
+  const [pokemon, setPokemon] = useState<Pokemon | null>(null);
+
   const [isStarred, setIsStarred] = useState<boolean>(false);
+
+  useEffect(() => {
+    async function fetchData(name: string) {
+      fetchPokemon(name).then(setPokemon);
+    }
+
+    fetchData(name);
+  }, [name]);
+
+  if (pokemon == null) {
+    return (
+      <View>
+        <ActivityIndicator size="large"/>
+      </View>
+    ); 
+  }
+
+  const types: Type[] = pokemon.types.reduce((buffer, current) => buffer.concat(current.type), []);
 
   return (
     <View>
-      <Button onPress={() => setIsStarred(!isStarred)} title={isStarred ? "Star" : "Remove Star"}/>
-      <Image source={{ height: 100, uri: properties.sprites.front_default, width: 100}}/>
-      <Text>{properties.name} {isStarred && "⭐"}</Text>
-      <Text>#{properties.id.toString().padStart(4, "0")}</Text>
+      <TouchableOpacity onPress={() => setIsStarred(!isStarred)}>
+        <Octicons name={isStarred ? "star-fill" : "star"} size={24} color="black" />
+      </TouchableOpacity>
+      <Image source={{ height: 100, uri: pokemon.sprites.front_default, width: 100}}/>
+      <Text>
+        {pokemon.name}
+      </Text>
+      <Text>#{pokemon.id.toString().padStart(4, "0")}</Text>
       <View>
-        {properties.types.map((type, index) => (
+        {types.map((type, index) => (
           <View key={index}>
             <Text>{type.name}</Text>
           </View>
