@@ -136,10 +136,10 @@ export interface Pokemon {
   cries: Cry[];
   stats: Stat[];
   types: PokemonType[];
-  past_types: PokemonPokemonType[];
+  past_types: PastPokemonType[];
 }
 
-export async function fetchPokemon(name: string): Pokemon {
+export async function fetchPokemon(name: string): Promise<Pokemon> {
   const URL = "https://pokeapi.co/api/v2/pokemon/" + name;
 
   const response = await fetch(URL);
@@ -161,7 +161,7 @@ export interface PokemonResourceList {
   results: PokemonResource[];
 }
 
-export async function fetchPokemonResourceList(offset: number = 0, limit: number = 20): PokemonResourceList {
+export async function fetchPokemonResourceList(offset: number = 0, limit: number = 20): Promise<PokemonResourceList> {
   const URL = `https://pokeapi.co/api/v2/pokemon/?offset=${offset}&limit=${limit}`;
 
   const response = await fetch(URL);
