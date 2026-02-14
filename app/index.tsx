@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { ActivityIndicator, FlatList } from "react-native";
+import { ActivityIndicator, FlatList, View } from "react-native";
 
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 

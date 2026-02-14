@@ -1,15 +1,67 @@
 import { useEffect, useState } from "react";
 
-import { ActivityIndicator, Image, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { fetchPokemon, type Pokemon, type Sprites, type Type, } from "@/types/Pokemon";
 
+import Bug from "@/assets/images/pokemon/bug.svg";
+import Dark from "@/assets/images/pokemon/dark.svg";
+import Dragon from "@/assets/images/pokemon/dragon.svg";
+import Electric from "@/assets/images/pokemon/electric.svg";
+import Fairy from "@/assets/images/pokemon/fairy.svg";
+import Fighting from "@/assets/images/pokemon/fighting.svg";
+import Fire from "@/assets/images/pokemon/fire.svg";
+import Flying from "@/assets/images/pokemon/flying.svg";
+import Ghost from "@/assets/images/pokemon/ghost.svg";
+import Grass from "@/assets/images/pokemon/grass.svg";
+import Ground from "@/assets/images/pokemon/ground.svg";
+import Ice from "@/assets/images/pokemon/ice.svg";
+import Normal from "@/assets/images/pokemon/normal.svg";
+import Poison from "@/assets/images/pokemon/poison.svg";
+import Psychic from "@/assets/images/pokemon/psychic.svg";
+import Rock from "@/assets/images/pokemon/rock.svg";
+import Steel from "@/assets/images/pokemon/steel.svg";
+import Water from "@/assets/images/pokemon/water.svg";
+
 import Octicons from "@expo/vector-icons/Octicons";
+
+function Starred() {
+  const [isStarred, setIsStarred] = useState<boolean>(false);
+
+  return (
+    <TouchableOpacity onPress={() => setIsStarred(!isStarred)}>
+      <Octicons name={isStarred ? "star-fill" : "star"} size={16} color="black" />
+    </TouchableOpacity>
+  );
+}
+
+function getTypeIcon(type: string) {
+  const icons = new Map<string, object>([
+    ["bug", Bug],
+    ["dark", Dark],
+    ["dragon", Dragon],
+    ["electric", Electric],
+    ["fairy", Fairy],
+    ["fighting", Fighting],
+    ["fire", Fire],
+    ["flying", Flying],
+    ["ghost", Ghost],
+    ["grass", Grass],
+    ["ground", Ground],
+    ["ice", Ice],
+    ["normal", Normal],
+    ["poison", Poison],
+    ["psychic", Psychic],
+    ["rock", Rock],
+    ["steel", Steel],
+    ["water", Water],
+  ]);
+
+  return icons.get(type.toLowerCase());
+}
 
 export function PokemonCard({ name }: { name: string }) {
   const [pokemon, setPokemon] = useState<Pokemon | null>(null);
-
-  const [isStarred, setIsStarred] = useState<boolean>(false);
 
   useEffect(() => {
     async function fetchData(name: string) {
@@ -30,22 +82,44 @@ export function PokemonCard({ name }: { name: string }) {
   const types: Type[] = pokemon.types.reduce((buffer, current) => buffer.concat(current.type), []);
 
   return (
-    <View>
-      <TouchableOpacity onPress={() => setIsStarred(!isStarred)}>
-        <Octicons name={isStarred ? "star-fill" : "star"} size={24} color="black" />
-      </TouchableOpacity>
-      <Image source={{ height: 100, uri: pokemon.sprites.front_default, width: 100}}/>
+    <View style={styles.container}>
+      <Image source={{ uri: pokemon.sprites.front_default}} style={styles.sprite}/>
+      <Starred/>
+      <Text style={styles.index}>#{pokemon.id.toString().padStart(4, "0")}</Text>
+      <Text style={styles.name}>{pokemon.name}</Text>
       <Text>
-        {pokemon.name}
+        {types.map((type, index) => {
+          return (
+            <View style={{ padding: 4}}>
+              <Image source={getTypeIcon(type.name)} style={{ width: 36, height: 36 }}/>
+            </View>
+        )})}
       </Text>
-      <Text>#{pokemon.id.toString().padStart(4, "0")}</Text>
-      <View>
-        {types.map((type, index) => (
-          <View key={index}>
-            <Text>{type.name}</Text>
-          </View>
-        ))}
-      </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: "center",
+    minWidth: 200,
+    maxWidth: 200,
+    width: 200,
+    padding: 20,
+  },
+  index: {
+    fontSize: 16,
+  },
+  name: {
+    fontSize: 24,
+    fontWeight: "bold",
+    textTransform: "capitalize",
+  },
+  sprite: {
+    backgroundColor: "lightgray",
+    borderRadius: 12,
+    marginBottom: 8,
+    height: 100,
+    width: 100,
+  },
+});
