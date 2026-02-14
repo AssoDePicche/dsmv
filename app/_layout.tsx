@@ -10,6 +10,11 @@ export default function RootLayout() {
         tabBarLabel: "",
         title: "Pokédex",
       }}/>
+      <Tabs.Screen name="liked" options={{
+        tabBarIcon: ({ color,  size }) => <Ionicons color={color} name="heart" size={size}/>,
+        tabBarLabel: "",
+        title: "Liked",
+      }}/>
     </Tabs>
   );
 }

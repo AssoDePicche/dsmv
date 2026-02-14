@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 
-import { ActivityIndicator, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
+import SkeletonContent from "react-native-reanimated-skeleton";
 
 import { fetchPokemon, type Pokemon, type Sprites, type Type, } from "@/types/Pokemon";
 
@@ -23,14 +25,18 @@ import Rock from "@/assets/images/pokemon/rock.svg";
 import Steel from "@/assets/images/pokemon/steel.svg";
 import Water from "@/assets/images/pokemon/water.svg";
 
-import Octicons from "@expo/vector-icons/Octicons";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
-function Starred() {
-  const [isStarred, setIsStarred] = useState<boolean>(false);
+function Starred({ initialValue, isLoading } : { initialValue: boolean, isLoading: boolean }) {
+  const [isStarred, setIsStarred] = useState<boolean>(initialValue);
+
+  if (isLoading) {
+    return <Ionicons name={isStarred ? "heart" : "heart-outline"} size={24} color="lightgray" />;
+  }
 
   return (
     <TouchableOpacity onPress={() => setIsStarred(!isStarred)}>
-      <Octicons name={isStarred ? "star-fill" : "star"} size={16} color="black" />
+      <Ionicons name={isStarred ? "heart" : "heart-outline"} size={24} color="black" />
     </TouchableOpacity>
   );
 }
@@ -73,8 +79,12 @@ export function PokemonCard({ name }: { name: string }) {
 
   if (pokemon == null) {
     return (
-      <View>
-        <ActivityIndicator size="large"/>
+      <View style={styles.container}>
+        <View style={styles.sprite}/>
+        <Starred initialValue={false} isLoading={true}/>
+        <View style={styles.indexPlaceholder}/>
+        <View style={styles.namePlaceholder}/>
+        <View style={styles.typePlaceholder}/>
       </View>
     ); 
   }
@@ -84,7 +94,7 @@ export function PokemonCard({ name }: { name: string }) {
   return (
     <View style={styles.container}>
       <Image source={{ uri: pokemon.sprites.front_default}} style={styles.sprite}/>
-      <Starred/>
+      <Starred initialValue={false} isLoading={false}/>
       <Text style={styles.index}>#{pokemon.id.toString().padStart(4, "0")}</Text>
       <Text style={styles.name}>{pokemon.name}</Text>
       <Text>
@@ -110,10 +120,24 @@ const styles = StyleSheet.create({
   index: {
     fontSize: 16,
   },
+  indexPlaceholder: {
+    backgroundColor: "lightgray",
+    borderRadius: 6,
+    height: 24,
+    width: 60,
+    marginBottom: 6,
+  },
   name: {
     fontSize: 24,
     fontWeight: "bold",
     textTransform: "capitalize",
+  },
+  namePlaceholder: {
+    backgroundColor: "lightgray",
+    borderRadius: 6,
+    height: 24,
+    marginBottom: 4,
+    width: 100,
   },
   sprite: {
     backgroundColor: "lightgray",
@@ -121,5 +145,12 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     height: 100,
     width: 100,
+  },
+  typePlaceholder: {
+    backgroundColor: "lightgray",
+    borderRadius: 100,
+    height: 36,
+    marginTop: 4,
+    width: 36,
   },
 });
