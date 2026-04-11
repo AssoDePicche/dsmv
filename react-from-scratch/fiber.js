@@ -1,3 +1,43 @@
+class Fiber {
+  constructor(type, props, parentFiber, sibling) {
+    this.type = type;
+
+    this.props = props;
+
+    if (parentFiber) {
+      this.parentFiber = parentFiber;
+
+      parentFiber.child = this;
+    }
+
+    this.sibling = sibling;
+  }
+
+  static createRoot(type, props) {
+    return new Fiber(type, props, null, null);
+  }
+}
+
+class FiberScheduler {
+  execute(fiberTreeRoot) {
+    const originalUpdateHost = updateHostComponent;
+
+    updateHostComponent = (fiber) => console.log('Visiting node:', fiber.type); 
+
+    console.log('--- Starting Fiber Traversal Test ---');
+
+    let nextUnit = fiberTreeRoot;
+
+    while (nextUnit) {
+      nextUnit = performUnitOfWork(nextUnit);
+    }
+
+    console.log('--- Traversal Finished ---');
+
+    updateHostComponent = originalUpdateHost;
+  }
+}
+
 let nextUnitOfWork = null
 
 let wipRoot = null;
@@ -28,18 +68,6 @@ function createDom(fiber) {
   return dom
 }
 
-function lookForSibling(fiber) {
-  if (!fiber) {
-    return;
-  }
-
-  if (fiber.sibling) {
-    return fiber.sibling;
-  }
-
-  return lookForSibling(fiber.parent);
-}
-
 function performUnitOfWork(fiber) {
   const isFunctionComponent = fiber.type instanceof Function;
 
@@ -53,7 +81,11 @@ function performUnitOfWork(fiber) {
     return fiber.child;
   }
 
-  return lookForSibling(fiber);
+  for (let currentFiber = fiber; currentFiber; currentFiber = currentFiber.parentFiber) {
+    if (currentFiber.sibling) {
+      return currentFiber.sibling;
+    }
+  } 
 }
 
 function updateHostComponent(fiber) {
@@ -64,33 +96,14 @@ function updateHostComponent(fiber) {
   reconcileChildren(fiber, fiber.props.children)
 }
 
-const fiberC = { type: 'C', props: {} };
+const fiberA = Fiber.createRoot('A', {});
 
-const fiberB = { type: 'B', props: {}, child: fiberC };
+const fiberD = new Fiber('D', {}, fiberA, null);
 
-const fiberD = { type: 'D', props: {} };
+const fiberB = new Fiber('B', {}, fiberA, fiberD);
 
-const fiberA = { type: 'A', props: {}, child: fiberB };
+const fiberC = new Fiber('C', {}, fiberB, null);
 
-fiberC.parent = fiberB;
+const scheduler = new FiberScheduler();
 
-fiberB.parent = fiberA;
-
-fiberD.parent = fiberA;
-
-fiberB.sibling = fiberD;
-
-const originalUpdateHost = updateHostComponent;
-
-updateHostComponent = (fiber) => console.log('Visiting node:', fiber.type); 
-
-console.log('--- Starting Fiber Traversal Test ---');
-
-let nextUnit = fiberA;
-
-while (nextUnit) {
-  nextUnit = performUnitOfWork(nextUnit);
-}
-console.log('--- Traversal Finished ---');
-
-updateHostComponent = originalUpdateHost;
+scheduler.execute(fiberA);
