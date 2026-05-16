@@ -2,9 +2,7 @@ import { createContext, FC, ReactNode, useCallback, useContext, useEffect, useSt
 
 import { ActivityIndicator } from 'react-native';
 
-import { getItem, setItem } from '@/services/storage';
-
-const FAVORITES_KEY: string = '@Pokedex:favorites';
+import { storage } from '@/services/favorites';
 
 interface FavoritesContextData {
   favorites: number[];
@@ -26,11 +24,9 @@ const useProvideFavorites = () => {
 
   const loadFavorites = useCallback(async () => {
     try {
-      const storedFavorites = await getItem(FAVORITES_KEY);
+      const storedFavorites = await storage.load();
 
-      if (storedFavorites) {
-        setFavorites(JSON.parse(storedFavorites));
-      }
+      setFavorites(storedFavorites);
     } catch (error) {
       console.error('Failed to load favorites from storage', error);
     } finally {
@@ -40,7 +36,7 @@ const useProvideFavorites = () => {
 
   const saveFavorites = useCallback(async () => {
     try {
-      await setItem(FAVORITES_KEY, JSON.stringify(favorites));
+      await storage.save(favorites);
     } catch (error) {
       console.error('Failed to save favorites in storage', error);
     }
