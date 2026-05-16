@@ -6,7 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { PokemonCard } from '@/components/Pokedex';
 
-import { type Pokemon, type PokemonResourceList } from '@/types/Pokemon';
+import { type Pokemon } from '@/types/Pokemon';
 
 import { usePokedexViewModel } from  './usePokedexViewModel';
 

@@ -2,21 +2,12 @@ import { Tabs } from 'expo-router';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-import { NavigationContainer } from '@react-navigation/native';
-
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-
-import { RootStackParamList } from '../types/Navigation';
+import { Providers } from '@/components/Providers';
 
 export default function RootLayout() {
   return (
-    <SafeAreaProvider>
-      <Tabs
-        screenOptions={{
-        }}
-      >
+    <Providers>
+      <Tabs>
         <Tabs.Screen
           name="[pokemon]"
           options={{
@@ -39,6 +30,6 @@ export default function RootLayout() {
           title: "Liked",
         }}/>
       </Tabs>
-    </SafeAreaProvider>
+    </Providers>
   );
 }
