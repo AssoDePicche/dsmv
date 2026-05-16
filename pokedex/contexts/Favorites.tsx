@@ -1,4 +1,10 @@
-import { createContext, FC, ReactNode, useContext, useState } from 'react';
+import { createContext, FC, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
+
+import { ActivityIndicator } from 'react-native';
+
+import { getItem, setItem } from '@/services/storage';
+
+const FAVORITES_KEY: string = '@Pokedex:favorites';
 
 interface FavoritesContextData {
   favorites: number[];
@@ -15,6 +21,40 @@ interface Properties {
 
 const useProvideFavorites = () => {
   const [favorites, setFavorites] = useState<number[]>([]);
+
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const loadFavorites = useCallback(async () => {
+    try {
+      const storedFavorites = await getItem(FAVORITES_KEY);
+
+      if (storedFavorites) {
+        setFavorites(JSON.parse(storedFavorites));
+      }
+    } catch (error) {
+      console.error('Failed to load favorites from storage', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [favorites]);
+
+  const saveFavorites = useCallback(async () => {
+    try {
+      await setItem(FAVORITES_KEY, JSON.stringify(favorites));
+    } catch (error) {
+      console.error('Failed to save favorites in storage', error);
+    }
+  }, [favorites]);
+
+  useEffect(() => {
+    loadFavorites();
+  }, []);
+
+  useEffect(() => {
+    if (!isLoading) {
+      saveFavorites();
+    }
+  }, [favorites, isLoading]);
 
   const addFavorite = (pokemonId: number) => {
     if (favorites.includes(pokemonId)) {
@@ -33,11 +73,16 @@ const useProvideFavorites = () => {
     addFavorite,
     removeFavorite,
     isFavorite,
+    isLoading,
   };
 };
 
 export const FavoritesProvider: FC<Properties> = ({ children }): ReactNode => {
   const favorites = useProvideFavorites();
+
+  if (favorites.isLoading) {
+    return <ActivityIndicator size='large' />
+  }
 
   return <FavoritesContext.Provider value={favorites}>{children}</FavoritesContext.Provider>;
 };
