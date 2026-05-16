@@ -2,7 +2,7 @@ import { getItem, setItem } from '@/services/storage';
 
 const FAVORITES_KEY: string = '@Pokedex:favorites';
 
-const loadFavorites = async (): number[] => {
+const loadFavorites = async (): string[] => {
   const storedFavorites = await getItem(FAVORITES_KEY);
 
   if (storedFavorites) {
@@ -10,7 +10,7 @@ const loadFavorites = async (): number[] => {
   }
 };
 
-export const saveFavorites = async (favorites: number[]) => setItem(FAVORITES_KEY, JSON.stringify(favorites));
+export const saveFavorites = async (favorites: string[]) => setItem(FAVORITES_KEY, JSON.stringify(favorites));
 
 export const storage = {
   load: loadFavorites,

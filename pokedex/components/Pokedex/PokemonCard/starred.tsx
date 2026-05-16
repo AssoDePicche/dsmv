@@ -7,23 +7,23 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useFavorites } from '@/contexts/Favorites';
 
 interface Properties {
-  pokemonId: number;
+  pokemonName: string;
 }
 
-export const Starred: FC<Properties> = ({ pokemonId }) => {
-  const { favorites, addFavorite, removeFavorite, isFavorite }= useFavorites();
+export const Starred: FC<Properties> = ({ pokemonName }) => {
+  const { favorites, addFavorite, removeFavorite, isFavorite } = useFavorites();
 
-  const isStarred = isFavorite(pokemonId);
+  const isStarred = isFavorite(pokemonName);
 
   const toggleState = () => {
     if (isStarred) {
-      removeFavorite(pokemonId);
+      removeFavorite(pokemonName);
     } else {
-      addFavorite(pokemonId);
+      addFavorite(pokemonName);
     }
   };
 
-  if (!pokemonId) {
+  if (!pokemonName) {
     return <Ionicons name={isStarred ? 'heart' : 'heart-outline'} size={24} color='lightgray' />;
   }
 

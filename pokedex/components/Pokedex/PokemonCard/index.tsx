@@ -13,13 +13,13 @@ interface Properties {
 }
 
 export const PokemonCard: FC<Properties> = ({ name }) => {
-  const { handlePress, index, isLoading, pokemonId, spriteURL, types } = usePokemonCard(name);
+  const { handlePress, index, isLoading, spriteURL, types } = usePokemonCard(name);
 
   if (isLoading) {
     return (
       <View style={styles.container} >
         <View style={styles.sprite} />
-        <Starred pokemonId={pokemonId} />
+        <Starred pokemonName={name} />
         <View style={styles.indexPlaceholder} />
         <View style={styles.namePlaceholder} />
         <View style={styles.typePlaceholder} />
@@ -31,7 +31,7 @@ export const PokemonCard: FC<Properties> = ({ name }) => {
     <TouchableOpacity onPress={handlePress}>
       <View style={styles.container}>
         <Image source={spriteURL} style={styles.sprite}/>
-        <Starred pokemonId={pokemonId} />
+        <Starred pokemonName={name} />
         <Text style={styles.index}>#{index}</Text>
         <Text style={styles.name}>{name}</Text>
         <Text>{types.map((type, index) => <Type key={index} name={type.name} />)}</Text>

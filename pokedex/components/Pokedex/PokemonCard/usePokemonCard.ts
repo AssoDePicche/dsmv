@@ -26,7 +26,6 @@ export const usePokemonCard = (name: string) => {
     handlePress: handlePress,
     index: pokemon?.id.toString().padStart(4, "0"),
     isLoading: pokemon === null,
-    pokemonId: pokemon?.id,
     spriteURL: pokemon?.sprites.front_default,
     types: pokemon?.types.reduce((buffer, current) => buffer.concat(current.type), []),
   };

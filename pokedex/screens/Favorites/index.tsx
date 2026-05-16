@@ -1,8 +1,10 @@
 import { FC, ReactNode } from 'react';
 
-import { StyleSheet, Text } from 'react-native';
+import { FlatList, StyleSheet, Text } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { PokemonCard } from '@/components/Pokedex';
 
 import { useFavorites } from '@/contexts/Favorites';
 
@@ -11,9 +13,18 @@ import { type Pokemon } from '@/types/Pokemon';
 export const Favorites: FC = (): ReactNode => {
   const { favorites } = useFavorites();
 
+  const renderItem = ({ item }: { item: string }) => <PokemonCard name={item}/>;
+
   return (
     <SafeAreaView style={styles.container}>
-    {favorites.map((p: number, index: number) => (<Text key={index}>{p}</Text>))}
+    <FlatList
+        data={favorites}
+        keyExtractor={(name: string) => name}
+        numColumns={4}
+        renderItem={renderItem}
+        ListEmptyComponent={() => <Text>Nenhum pokémon encontrado</Text>}
+      />
+
     </SafeAreaView>
   );
 }

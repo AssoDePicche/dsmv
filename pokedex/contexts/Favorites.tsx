@@ -5,10 +5,10 @@ import { ActivityIndicator } from 'react-native';
 import { storage } from '@/services/favorites';
 
 interface FavoritesContextData {
-  favorites: number[];
-  addFavorite: (pokemonId: number) => void;
-  removeFavorite: (pokemonId: number) => void;
-  isFavorite: (pokemonId: number) => boolean;
+  favorites: string[];
+  addFavorite: (pokemonName: string) => void;
+  removeFavorite: (pokemonName: string) => void;
+  isFavorite: (pokemonName: string) => boolean;
 }
 
 export const FavoritesContext = createContext<FavoritesContextData | null>(null); 
@@ -18,7 +18,7 @@ interface Properties {
 }
 
 const useProvideFavorites = () => {
-  const [favorites, setFavorites] = useState<number[]>([]);
+  const [favorites, setFavorites] = useState<string[]>([]);
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -52,17 +52,17 @@ const useProvideFavorites = () => {
     }
   }, [favorites, isLoading]);
 
-  const addFavorite = (pokemonId: number) => {
-    if (favorites.includes(pokemonId)) {
+  const addFavorite = (pokemonName: string) => {
+    if (favorites.includes(pokemonName)) {
       return;
     }
 
-    setFavorites(previous => [...previous, pokemonId]);
+    setFavorites(previous => [...previous, pokemonName]);
   };
 
-  const removeFavorite = (pokemonId: number) => setFavorites(previous => previous.filter((id: number) => id !== pokemonId));
+  const removeFavorite = (pokemonName: string) => setFavorites(previous => previous.filter((name: string) => id !== pokemonName));
 
-  const isFavorite = (pokemonId: number) => favorites.includes(pokemonId);
+  const isFavorite = (pokemonName: string) => favorites.includes(pokemonName);
 
   return {
     favorites,
