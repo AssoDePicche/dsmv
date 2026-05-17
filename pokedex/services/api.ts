@@ -11,7 +11,9 @@ export const fetchPokemon = async (name: string): Promise<Pokemon> => {
 }
 
 export const fetchPokemonResourceList = async (offset: number = 0, limit: number = 20): Promise<PokemonResourceList> => {
-  const response = await fetch(`${URL}?offset=${offset}&limit=${limit}`);
+  const uri: string = `${URL}?offset=${offset}&limit=${limit}`;
+
+  const response = await fetch(uri);
 
   const resourceList = await response.json();
 

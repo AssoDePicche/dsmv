@@ -60,7 +60,7 @@ const useProvideFavorites = () => {
     setFavorites(previous => [...previous, pokemonName]);
   };
 
-  const removeFavorite = (pokemonName: string) => setFavorites(previous => previous.filter((name: string) => id !== pokemonName));
+  const removeFavorite = (pokemonName: string) => setFavorites(previous => previous.filter((name: string) => name !== pokemonName));
 
   const isFavorite = (pokemonName: string) => favorites.includes(pokemonName);
 

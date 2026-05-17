@@ -50,7 +50,7 @@ export const Type: FC<Properties> = ({ name }): ReactNode => {
   const url = icons.get(name.toLowerCase());
 
   return (
-    <View style={styles.padding}>
+    <View style={styles.container}>
       <Image source={url} style={styles.image}/>
     </View>
   );
