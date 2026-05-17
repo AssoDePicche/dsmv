@@ -1,5 +1,7 @@
 import { Tabs } from 'expo-router';
 
+import { StyleSheet, View } from 'react-native';
+
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { Providers } from '@/components/Providers';
@@ -7,13 +9,14 @@ import { Providers } from '@/components/Providers';
 export default function RootLayout() {
   return (
     <Providers>
-      <Tabs>
+      <Tabs screenOptions={{
+        headerShown: false,
+        tabBarStyle: styles.tabBar,
+      }}>
         <Tabs.Screen
-          name="[pokemon]"
+          name="[pokemon]/index"
           options={{
-          tabBarIcon: ({ color, size }) => <Ionicons color={color} name="book" size={size}/>,
-          tabBarLabel: "",
-          title: "Details",
+            href: null,
         }}/>
         <Tabs.Screen
           name="index"
@@ -33,3 +36,14 @@ export default function RootLayout() {
     </Providers>
   );
 }
+
+const styles = StyleSheet.create({
+  tabBar: {
+    alignItems: 'center',
+    alignSelf: 'center',
+    borderTopWidth: 0,
+    flexDirection: 'row',
+    height: 65,
+    paddingBottom: 0,
+  }
+});
